@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>James White III — Coming Soon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #19325F;
+    --navy-deep: #0F1E3A;
+    --navy-mid: #1E3A6E;
+    --amber: #9B6A1C;
+    --amber-light: #C4872A;
+    --white: #FFFFFF;
+    --sky: #EBF3FF;
+    --sky-dim: rgba(235, 243, 255, 0.06);
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy-deep);
+    color: var(--white);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* ── GRAIN TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 200px;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.4;
+  }
+
+  /* ── AMBIENT GLOW ── */
+  .glow {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+    animation: driftGlow 14s ease-in-out infinite alternate;
+  }
+  .glow-1 {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(155, 106, 28, 0.18) 0%, transparent 70%);
+    top: -10%; left: -10%;
+    animation-duration: 16s;
+  }
+  .glow-2 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(25, 50, 95, 0.5) 0%, transparent 70%);
+    bottom: -5%; right: -5%;
+    animation-duration: 20s;
+    animation-direction: alternate-reverse;
+  }
+  @keyframes driftGlow {
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(40px, 30px) scale(1.1); }
+  }
+
+  /* ── CURTAIN PANELS ── */
+  .curtain-left, .curtain-right {
+    position: fixed;
+    top: 0; bottom: 0;
+    width: 50%;
+    background: var(--navy-deep);
+    z-index: 50;
+    transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+  }
+  .curtain-left  { left: 0;  transform: translateX(0); }
+  .curtain-right { right: 0; transform: translateX(0); }
+  .curtain-left::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, transparent, var(--amber-light), transparent);
+    opacity: 0.6;
+  }
+  .curtain-right::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, transparent, var(--amber-light), transparent);
+    opacity: 0.6;
+  }
+
+  body.revealed .curtain-left  { transform: translateX(-102%); }
+  body.revealed .curtain-right { transform: translateX(102%); }
+
+  /* ── MAIN CONTENT ── */
+  .stage {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 40px 24px;
+    max-width: 820px;
+    width: 100%;
+  }
+
+  /* AMBER LINE */
+  .amber-line {
+    display: block;
+    width: 0;
+    height: 1.5px;
+    background: linear-gradient(90deg, var(--amber), var(--amber-light));
+    margin: 0 auto 36px;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1) 1.4s;
+  }
+  body.revealed .amber-line { width: 80px; }
+
+  /* LOGO */
+  .logo-wrap {
+    overflow: visible;
+    margin-bottom: 36px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease 1.8s, transform 0.8s ease 1.8s;
+  }
+  body.revealed .logo-wrap {
+    overflow: visible;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .logo-mark {
+    display: inline-block;
+  }
+  /* SVG logo inline recreation of JFC mark */
+  .logo-svg-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+  }
+  .logo-icon {
+    width: 44px;
+    height: 44px;
+    opacity: 0.92;
+  }
+  .logo-text-block {
+    text-align: left;
+  }
+  .logo-wordmark {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: 0.12em;
+    color: var(--sky);
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+  .logo-wordmark span {
+    display: block;
+    font-weight: 400;
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    color: rgba(235, 243, 255, 0.45);
+    margin-top: 3px;
+  }
+
+  /* EYEBROW */
+  .eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--amber-light);
+    margin-bottom: 22px;
+    opacity: 0;
+    transition: opacity 0.7s ease 2.3s;
+  }
+  body.revealed .eyebrow { opacity: 1; }
+
+  /* HEADLINE */
+  .headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(40px, 6.5vw, 72px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--white);
+    margin-bottom: 24px;
+    white-space: nowrap;
+    overflow: visible;
+    padding-left: 0.06em; /* breathing room for Playfair J descender */
+  }
+  .headline-clip {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    padding-bottom: 0.05em;
+  }
+  .headline-word {
+    display: inline-block;
+    transform: translateY(110%);
+    opacity: 0;
+    transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.9s ease;
+  }
+  .headline-word:nth-child(1) { transition-delay: 2.0s; }
+  .headline-word:nth-child(2) { transition-delay: 2.15s; }
+  .headline-word:nth-child(3) { transition-delay: 2.3s; }
+  body.revealed .headline-word { transform: translateY(0); opacity: 1; }
+
+  .headline-word + .headline-word { margin-left: 0.2em; }
+
+  /* SUBTEXT */
+  .subtext {
+    font-size: 15px;
+    font-weight: 400;
+    color: rgba(235, 243, 255, 0.55);
+    line-height: 1.75;
+    max-width: 480px;
+    margin: 0 auto 36px;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.8s ease 2.7s, transform 0.8s ease 2.7s;
+  }
+  body.revealed .subtext { opacity: 1; transform: translateY(0); }
+
+  /* COUNTDOWN */
+  .countdown-wrap {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-bottom: 52px;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.8s ease 3.0s, transform 0.8s ease 3.0s;
+  }
+  body.revealed .countdown-wrap { opacity: 1; transform: translateY(0); }
+
+  .count-unit {
+    text-align: center;
+    min-width: 64px;
+  }
+  .count-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1;
+    display: block;
+    letter-spacing: -0.02em;
+  }
+  .count-label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(235, 243, 255, 0.35);
+    margin-top: 6px;
+    display: block;
+  }
+  .count-divider {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    color: rgba(155, 106, 28, 0.3);
+    line-height: 1;
+    padding-top: 4px;
+  }
+
+  /* BOTTOM ROW */
+  .bottom-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    opacity: 0;
+    transition: opacity 0.8s ease 3.3s;
+  }
+  body.revealed .bottom-row { opacity: 1; }
+
+  .social-link {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    color: rgba(235, 243, 255, 0.4);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.25s ease;
+  }
+  .social-link:hover { color: var(--amber-light); }
+
+  .dot-sep {
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: rgba(235, 243, 255, 0.2);
+  }
+
+  .notify-btn {
+    padding: 11px 28px;
+    background: var(--amber);
+    color: var(--white);
+    border: none;
+    border-radius: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .notify-btn:hover {
+    background: var(--amber-light);
+    transform: translateY(-1px);
+  }
+
+  /* ── DIAGONAL RULE ── */
+  .rule-wrap {
+    width: 1px;
+    height: 0;
+    background: linear-gradient(to bottom, var(--amber-light), transparent);
+    position: fixed;
+    left: 50%;
+    top: 0;
+    opacity: 0.15;
+    transition: height 0.8s ease 1.2s;
+    z-index: 5;
+  }
+  body.revealed .rule-wrap { height: 100vh; }
+
+  /* ── TICKER ── */
+  .ticker-wrap {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    overflow: hidden;
+    height: 36px;
+    border-top: 1px solid rgba(235, 243, 255, 0.05);
+    background: rgba(15, 30, 58, 0.6);
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.6s ease 3.6s;
+  }
+  body.revealed .ticker-wrap { opacity: 1; }
+
+  .ticker {
+    display: flex;
+    gap: 0;
+    animation: ticker 28s linear infinite;
+    white-space: nowrap;
+  }
+  .ticker-item {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(235, 243, 255, 0.3);
+    padding: 0 40px;
+  }
+  .ticker-item strong {
+    color: rgba(155, 106, 28, 0.7);
+    font-weight: 600;
+  }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Curtain panels -->
+<div class="curtain-left"></div>
+<div class="curtain-right"></div>
+
+<!-- Ambient glows -->
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+
+<!-- Center rule -->
+<div class="rule-wrap"></div>
+
+<!-- Main stage -->
+<main class="stage">
+  <span class="amber-line"></span>
+
+  <div class="logo-wrap">
+    <div class="logo-svg-wrap">
+      <!-- JFC Icon inline SVG -->
+<svg id="jfc-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 144.06" style="height:54px;width:auto;display:block;overflow:visible;"><defs><style>.cls-1{fill:#fff;stroke-width:0px;}</style></defs><path class="cls-1" d="M56.52,32.7c0-10.79,8.78-19.57,19.57-19.57h50.79V0H45.83v61.38c0,15.49-12.6,28.09-28.09,28.09H0v15.04c0,12.91,10.46,23.37,23.37,23.37h33.15V32.7Z"/><path class="cls-1" d="M17.74,73.02c6.42,0,11.64-5.22,11.64-11.64V0h-9.59C8.86,0,0,8.86,0,19.79v53.23h17.74Z"/><path class="cls-1" d="M72.98,32.7v95.18h30.14c-11.67-3.13-20.3-13.77-20.3-26.41v-28.15c0-14.48,11.78-26.27,26.27-26.27h17.8v-17.48h-50.79c-1.72,0-3.12,1.4-3.12,3.12Z"/><path class="cls-1" d="M109.09,63.51c-5.41,0-9.81,4.4-9.81,9.81v28.15c0,6.02,4.9,10.92,10.92,10.92h16.7v-48.88h-17.8Z"/><path class="cls-1" d="M165.33,3.69h4.62v24.36c0,2.15-.34,3.91-1.01,5.27-.67,1.36-1.52,2.44-2.53,3.23-1.01.79-2.1,1.33-3.25,1.64-1.16.3-2.21.46-3.18.46-2.41,0-4.44-.62-6.09-1.85-1.65-1.24-2.7-3.11-3.15-5.61l4.53-1.01c.26,1.28.79,2.3,1.59,3.03.8.74,1.85,1.11,3.13,1.11,1.16,0,2.08-.22,2.77-.67.69-.45,1.23-1.04,1.61-1.76.39-.72.64-1.55.77-2.48.13-.93.19-1.88.19-2.84V3.69Z"/><path class="cls-1" d="M188.59,3.69h4.19l14.59,34.09h-5.39l-3.42-8.43h-16.23l-3.37,8.43h-5.39l15.02-34.09ZM196.87,25.31l-6.36-15.65h-.1l-6.45,15.65h12.9Z"/><path class="cls-1" d="M211.46,3.69h6.89l10.83,25.81h.19l10.74-25.81h6.89v34.09h-4.62V9.76h-.1l-11.51,28.02h-3.08l-11.51-28.02h-.1v28.02h-4.62V3.69Z"/><path class="cls-1" d="M255.42,3.69h22v4.33h-17.38v10.16h16.18v4.33h-16.18v10.93h18.25v4.33h-22.87V3.69Z"/><path class="cls-1" d="M285.85,30.66c.83,1.25,1.9,2.18,3.2,2.77,1.3.59,2.64.89,4.02.89.77,0,1.56-.12,2.36-.36.8-.24,1.53-.6,2.19-1.08.66-.48,1.2-1.08,1.61-1.78.42-.71.63-1.52.63-2.46,0-1.32-.42-2.32-1.25-3.01-.84-.69-1.87-1.27-3.11-1.73-1.24-.46-2.58-.92-4.04-1.35-1.46-.43-2.81-1.04-4.05-1.81s-2.27-1.81-3.11-3.11-1.25-3.06-1.25-5.27c0-.99.22-2.05.65-3.18.43-1.12,1.12-2.15,2.05-3.08.93-.93,2.13-1.71,3.59-2.34,1.46-.63,3.22-.94,5.27-.94,1.86,0,3.64.26,5.35.77,1.7.51,3.19,1.56,4.48,3.13l-3.76,3.42c-.58-.9-1.4-1.62-2.46-2.17s-2.26-.82-3.61-.82-2.35.17-3.2.51-1.53.77-2.05,1.3-.87,1.1-1.08,1.71-.31,1.17-.31,1.69c0,1.44.42,2.55,1.25,3.32.84.77,1.87,1.4,3.11,1.88,1.24.48,2.58.92,4.05,1.3,1.46.39,2.81.92,4.05,1.61,1.23.69,2.27,1.62,3.11,2.79.83,1.17,1.25,2.79,1.25,4.84,0,1.64-.31,3.11-.94,4.43-.63,1.32-1.47,2.42-2.53,3.32-1.06.9-2.31,1.59-3.76,2.07-1.44.48-2.98.72-4.62.72-2.18,0-4.25-.38-6.21-1.16-1.96-.77-3.51-1.96-4.67-3.56l3.8-3.27Z"/><path class="cls-1" d="M154.69,43.82h21.43v4.33h-16.8v10.69h15.65v4.33h-15.65v14.73h-4.62v-34.09Z"/><path class="cls-1" d="M197.97,78.78c-2.6,0-4.99-.46-7.17-1.37-2.18-.92-4.05-2.17-5.61-3.78-1.56-1.61-2.78-3.5-3.66-5.68-.88-2.18-1.32-4.54-1.32-7.08s.44-4.89,1.32-7.08c.88-2.18,2.1-4.08,3.66-5.68,1.56-1.61,3.43-2.86,5.61-3.78,2.18-.91,4.58-1.37,7.17-1.37s4.99.46,7.17,1.37c2.18.92,4.05,2.18,5.61,3.78,1.56,1.61,2.78,3.5,3.66,5.68.88,2.18,1.32,4.54,1.32,7.08s-.44,4.9-1.32,7.08c-.88,2.18-2.1,4.08-3.66,5.68-1.56,1.61-3.43,2.86-5.61,3.78-2.18.91-4.57,1.37-7.17,1.37ZM197.97,74.44c1.96,0,3.72-.36,5.3-1.08,1.57-.72,2.92-1.69,4.05-2.91,1.12-1.22,1.99-2.66,2.6-4.31.61-1.65.91-3.41.91-5.27s-.31-3.62-.91-5.27c-.61-1.65-1.48-3.09-2.6-4.31-1.12-1.22-2.47-2.19-4.05-2.91-1.57-.72-3.34-1.08-5.3-1.08s-3.72.36-5.3,1.08c-1.57.72-2.92,1.69-4.05,2.91-1.12,1.22-1.99,2.66-2.6,4.31-.61,1.65-.91,3.41-.91,5.27s.3,3.62.91,5.27,1.48,3.09,2.6,4.31c1.12,1.22,2.47,2.19,4.05,2.91,1.57.72,3.34,1.08,5.3,1.08Z"/><path class="cls-1" d="M222.39,43.82h11.99c2.18,0,3.98.3,5.39.89,1.41.59,2.53,1.35,3.35,2.26s1.39,1.94,1.71,3.08c.32,1.14.48,2.24.48,3.3s-.19,2.14-.58,3.15c-.38,1.01-.94,1.93-1.66,2.74s-1.61,1.51-2.65,2.07c-1.04.56-2.21.91-3.49,1.03l9.68,15.55h-5.78l-8.67-15.02h-5.15v15.02h-4.62v-34.09ZM227.01,58.84h6.07c.9,0,1.79-.07,2.67-.22.88-.14,1.67-.41,2.36-.79s1.24-.94,1.66-1.66c.42-.72.63-1.66.63-2.82s-.21-2.09-.63-2.82c-.42-.72-.97-1.28-1.66-1.66-.69-.39-1.48-.65-2.36-.79-.88-.14-1.77-.22-2.67-.22h-6.07v10.98Z"/><path class="cls-1" d="M176.07,92.8c-.74-.9-1.65-1.59-2.72-2.07-1.08-.48-2.32-.72-3.73-.72s-2.72.27-3.92.82c-1.2.55-2.25,1.31-3.13,2.29-.88.98-1.57,2.14-2.07,3.49-.5,1.35-.75,2.81-.75,4.38s.25,3.08.75,4.41c.5,1.33,1.18,2.49,2.05,3.47.87.98,1.88,1.74,3.06,2.29,1.17.55,2.43.82,3.78.82,1.54,0,2.91-.32,4.09-.96s2.17-1.54,2.94-2.7l6.26,4.67c-1.44,2.02-3.27,3.51-5.49,4.48s-4.49,1.44-6.84,1.44c-2.67,0-5.12-.42-7.37-1.25-2.25-.83-4.19-2.03-5.83-3.59-1.64-1.56-2.91-3.44-3.83-5.66-.92-2.21-1.37-4.69-1.37-7.42s.46-5.2,1.37-7.41c.91-2.22,2.19-4.1,3.83-5.66,1.64-1.56,3.58-2.75,5.83-3.59,2.25-.83,4.7-1.25,7.37-1.25.96,0,1.97.09,3.01.27,1.04.18,2.07.46,3.08.84,1.01.38,1.98.9,2.91,1.54.93.64,1.77,1.43,2.5,2.36l-5.78,4.72Z"/><path class="cls-1" d="M186.75,83.94h7.51v12.71h14.59v-12.71h7.51v34.09h-7.51v-14.73h-14.59v14.73h-7.51v-34.09Z"/><path class="cls-1" d="M234.52,83.94h6.21l14.83,34.09h-8.47l-2.94-7.22h-13.24l-2.84,7.22h-8.28l14.73-34.09ZM237.41,93.86l-4.14,10.59h8.33l-4.19-10.59Z"/><path class="cls-1" d="M258.98,83.94h10.21l14.49,23.69h.1v-23.69h7.51v34.09h-9.82l-14.88-24.27h-.1v24.27h-7.51v-34.09Z"/><path class="cls-1" d="M329.09,115.63c-2.22,1.16-4.53,1.99-6.93,2.5-2.41.51-4.86.77-7.37.77-2.66,0-5.12-.42-7.37-1.25-2.25-.83-4.19-2.03-5.83-3.59-1.64-1.56-2.91-3.44-3.83-5.66s-1.37-4.69-1.37-7.42.46-5.2,1.37-7.41c.91-2.22,2.19-4.1,3.83-5.66,1.64-1.56,3.58-2.75,5.83-3.59,2.25-.83,4.7-1.25,7.37-1.25s5.24.33,7.54.99c2.29.66,4.31,1.79,6.04,3.39l-5.3,5.78c-1.03-1.06-2.18-1.86-3.47-2.41-1.28-.54-2.89-.82-4.82-.82-1.61,0-3.06.27-4.36.82-1.3.55-2.42,1.31-3.35,2.29-.93.98-1.65,2.14-2.14,3.49-.5,1.35-.75,2.81-.75,4.38s.25,3.08.75,4.41c.5,1.33,1.21,2.49,2.14,3.47.93.98,2.05,1.74,3.35,2.29s2.75.82,4.36.82,3.05-.19,4.24-.55,2.14-.75,2.84-1.13v-5.54h-6.12v-6.93h13.34v17.82Z"/><path class="cls-1" d="M335.97,83.94h23.16v6.93h-15.65v6.36h14.78v6.93h-14.78v6.93h16.52v6.93h-24.03v-34.09Z"/><path class="cls-1" d="M154.93,128.8h12.29v2.88h-8.67v3.4h8.08v2.91h-8.08v5.75h-3.62v-14.94Z"/><path class="cls-1" d="M185.29,136.22c0,4.14-2.76,7.84-8.19,7.84-5.06,0-7.96-3.46-7.96-7.82,0-4.11,3.06-7.75,8.13-7.75s8.03,3.66,8.03,7.73ZM172.96,136.19c0,2.82,1.43,5.04,4.34,5.04s4.17-2.54,4.17-4.97c0-2.65-1.29-4.95-4.31-4.95s-4.2,2.36-4.2,4.87Z"/><path class="cls-1" d="M191.75,128.8v8.44c0,3.18,1.67,3.98,3.5,3.98,1.95,0,3.26-.84,3.26-3.98v-8.44h3.62v8.56c0,4.53-2.55,6.69-6.99,6.69s-7.03-1.98-7.03-6.61v-8.64h3.62Z"/><path class="cls-1" d="M205.87,143.74v-14.94h4.29c4.2,6.4,5.87,8.74,6.81,10.51h.04c-.14-1.57-.12-4.36-.12-6.82v-3.69h3.32v14.94h-4.02c-1.41-2.22-6.19-9.65-7.08-11.35h-.04c.13,1.84.13,3.97.13,6.62v4.73h-3.32Z"/><path class="cls-1" d="M224.13,128.8h6.75c5.03,0,7.79,3.27,7.79,7.21,0,4.78-3.52,7.73-7.86,7.73h-6.67v-14.94ZM227.76,140.93h2.57c2.92,0,4.5-1.65,4.5-4.82,0-2.76-1.44-4.48-4.45-4.51h-2.62v9.34Z"/><path class="cls-1" d="M244.46,140.35l-1.3,3.39h-3.73l6.02-14.94h4.65l6.32,14.94h-3.92l-1.39-3.39h-6.65ZM250.1,137.45c-1.39-3.42-2.07-5.17-2.42-6.31h-.02c-.33,1.12-1.13,3.39-2.25,6.31h4.7Z"/><path class="cls-1" d="M260.11,131.69h-5.26v-2.89h14.12v2.89h-5.24v12.05h-3.63v-12.05Z"/><path class="cls-1" d="M274.92,128.8v14.94h-3.62v-14.94h3.62Z"/><path class="cls-1" d="M294.21,136.22c0,4.14-2.76,7.84-8.19,7.84-5.07,0-7.96-3.46-7.96-7.82,0-4.11,3.06-7.75,8.13-7.75s8.03,3.66,8.03,7.73ZM281.88,136.19c0,2.82,1.43,5.04,4.34,5.04s4.17-2.54,4.17-4.97c0-2.65-1.29-4.95-4.31-4.95s-4.2,2.36-4.2,4.87Z"/><path class="cls-1" d="M297.2,143.74v-14.94h4.29c4.2,6.4,5.87,8.74,6.81,10.51h.04c-.14-1.57-.12-4.36-.12-6.82v-3.69h3.32v14.94h-4.02c-1.41-2.22-6.19-9.65-7.08-11.35h-.04c.13,1.84.13,3.97.13,6.62v4.73h-3.32Z"/></svg>
+    </div>
+  </div>
+
+  <p class="eyebrow">Something is coming</p>
+
+  <h1 class="headline">
+    <span class="headline-clip"><span class="headline-word">Justice</span></span>
+    <span class="headline-clip"><span class="headline-word">Starts</span></span>
+    <span class="headline-clip"><span class="headline-word" style="font-style:italic;color:rgba(255,255,255,0.55)">Here.</span></span>
+  </h1>
+
+  <p class="subtext">
+    James White III's new website is coming soon — a platform for criminal justice reform, education advocacy, and the movement he's spent his life building.
+  </p>
+
+  <div class="countdown-wrap">
+    <div class="count-unit">
+      <span class="count-num" id="days">—</span>
+      <span class="count-label">Days</span>
+    </div>
+    <span class="count-divider">·</span>
+    <div class="count-unit">
+      <span class="count-num" id="hours">—</span>
+      <span class="count-label">Hours</span>
+    </div>
+    <span class="count-divider">·</span>
+    <div class="count-unit">
+      <span class="count-num" id="mins">—</span>
+      <span class="count-label">Minutes</span>
+    </div>
+    <span class="count-divider">·</span>
+    <div class="count-unit">
+      <span class="count-num" id="secs">—</span>
+      <span class="count-label">Seconds</span>
+    </div>
+  </div>
+
+  <div class="bottom-row">
+    <a href="https://instagram.com/jamesthechange" class="social-link" target="_blank"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;margin-right:7px;opacity:0.7"><rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>@jamesthechange</a>
+    <div class="dot-sep"></div>
+    <a href="mailto:james@jamesforchange.org" class="notify-btn">Get in Touch</a>
+    <div class="dot-sep"></div>
+    <a href="https://jamesforchange.org" class="social-link">jamesforchange.org</a>
+  </div>
+</main>
+
+<!-- Ticker tape -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span class="ticker-item">Attorney</span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item">Speaker</span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item">Advocate</span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item"><strong>James White III Esq.</strong></span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item">Criminal Justice Reform</span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item">Education Equity</span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item">Second Chances</span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item">Chair · BASICS Reentry Committee · State Bar of Georgia</span>
+    <span class="ticker-item">·</span>
+    <!-- duplicate for seamless loop -->
+    <span class="ticker-item">Attorney</span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item">Speaker</span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item">Advocate</span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item"><strong>James White III Esq.</strong></span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item">Criminal Justice Reform</span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item">Education Equity</span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item">Second Chances</span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item">Chair · BASICS Reentry Committee · State Bar of Georgia</span>
+    <span class="ticker-item">·</span>
+  </div>
+</div>
+
+<script>
+  // Trigger curtain reveal after brief pause
+  setTimeout(() => document.body.classList.add('revealed'), 400);
+
+  // Countdown to June 1, 2026
+  function updateCountdown() {
+    const target = new Date('2026-06-01T00:00:00');
+    const now = new Date();
+    const diff = target - now;
+    if (diff <= 0) {
+      document.getElementById('days').textContent = '0';
+      document.getElementById('hours').textContent = '0';
+      document.getElementById('mins').textContent = '0';
+      document.getElementById('secs').textContent = '0';
+      return;
+    }
+    const d = Math.floor(diff / (1000*60*60*24));
+    const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+    const m = Math.floor((diff % (1000*60*60)) / (1000*60));
+    const s = Math.floor((diff % (1000*60)) / 1000);
+    document.getElementById('days').textContent  = String(d).padStart(2,'0');
+    document.getElementById('hours').textContent = String(h).padStart(2,'0');
+    document.getElementById('mins').textContent  = String(m).padStart(2,'0');
+    document.getElementById('secs').textContent  = String(s).padStart(2,'0');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+</script>
+
+</body>
+</html>
